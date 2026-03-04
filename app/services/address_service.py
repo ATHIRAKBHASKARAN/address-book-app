@@ -3,7 +3,10 @@ from sqlalchemy.orm import Session
 from geopy.distance import geodesic
 from app.models.address import Address
 from app.repositories import address_repository
-from app.core.logging import logger
+
+from app.core.logging import get_logger
+
+logger = get_logger(__name__)
 
 
 def create_address(db: Session, address):
