@@ -4,10 +4,13 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     DATABASE_URL: str
     DEBUG: bool = False
-    API_PREFIX: str = "/api/v1"
+    API_V1_PREFIX: str = "/api/v1"
+    FEATURE_DISTANCE_SEARCH: bool = False
 
-    class Config:
-        env_file = ".env"
+    model_config = {
+        "env_file": ".env",
+        "extra": "ignore",  # Optional safety
+    }
 
 
 settings = Settings()
