@@ -19,8 +19,11 @@ def get_by_id(db: Session, address_id: int):
 
 
 def update(db: Session, db_address, update_data):
-    for key, value in update_data.dict().items():
+    update_dict = update_data.dict(exclude_unset=True)
+
+    for key, value in update_dict.items():
         setattr(db_address, key, value)
+
     db.commit()
     db.refresh(db_address)
     return db_address

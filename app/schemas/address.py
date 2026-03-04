@@ -1,10 +1,11 @@
 from pydantic import BaseModel, Field
+from typing import Optional
 
 
 class AddressBase(BaseModel):
     name: str
-    street: str
-    city: str
+    street: Optional[str] = None
+    city: Optional[str] = None
     latitude: float = Field(..., ge=-90, le=90)
     longitude: float = Field(..., ge=-180, le=180)
 
