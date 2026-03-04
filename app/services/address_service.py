@@ -1,6 +1,8 @@
+from typing import List
 from sqlalchemy.orm import Session
+from geopy.distance import geodesic
+from app.models.address import Address
 from app.repositories import address_repository
-from app.utils.distance import calculate_distance
 from app.core.logging import logger
 
 
@@ -9,13 +11,32 @@ def create_address(db: Session, address):
     return address_repository.create(db, address)
 
 
-def get_addresses_within_distance(db: Session, lat, lon, distance_km):
+def get_addresses_within_distance(
+    db: Session,
+    lat: float,
+    lon: float,
+    distance_km: float
+) -> List[Address]:
+
+    logger.info(
+        "Searching addresses within %.2f km of (%f, %f)",
+        distance_km,
+        lat,
+        lon
+    )
+
+    origin = (lat, lon)
     addresses = address_repository.get_all(db)
-    result = []
+
+    results: List[Address] = []
 
     for addr in addresses:
-        dist = calculate_distance(lat, lon, addr.latitude, addr.longitude)
-        if dist <= distance_km:
-            result.append(addr)
+        target = (addr.latitude, addr.longitude)
+        distance = geodesic(origin, target).km
 
-    return result
+        if distance <= distance_km:
+            results.append(addr)
+
+    logger.info("Found %d matching addresses", len(results))
+
+    return results

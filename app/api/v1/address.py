@@ -19,8 +19,15 @@ def get_all(db: Session = Depends(get_db)):
 
 
 @router.get("/search", response_model=list[AddressResponse])
-def search(lat: float, lon: float, distance_km: float, db: Session = Depends(get_db)):
-    return address_service.get_addresses_within_distance(db, lat, lon, distance_km)
+def search(
+    lat: float,
+    lon: float,
+    distance_km: float,
+    db: Session = Depends(get_db)
+):
+    return address_service.get_addresses_within_distance(
+        db, lat, lon, distance_km
+    )
 
 
 @router.put("/{address_id}", response_model=AddressResponse)
